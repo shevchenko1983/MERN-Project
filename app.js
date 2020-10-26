@@ -4,7 +4,7 @@ const express = require('express');
 
 //:TODO init express app
 const app = express();
-//Create Auth EndPoint
+//Create Auth EndPoint => '/api/auth'
 app.use('/api/auth', require('./routes/auth.routes'));
 
 //: TODO include config
