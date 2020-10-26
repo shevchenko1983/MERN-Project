@@ -1,4 +1,5 @@
 {
   "port": 5000,
+  "secretKeyJWT": "Andrey Mern project",
   "mongoDbURI": "mongodb+srv://root:root@cluster0.mhtyz.mongodb.net/app?retryWrites=true&w=majority"
 }

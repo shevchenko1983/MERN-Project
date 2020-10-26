@@ -3,12 +3,17 @@ const {Router} = require('express');
 const bcrypt = require('bcryptjs');
 //include values validation form 'express-validator'
 const {check, validationResult} = require('express-validator');
+//include jsonwebtoken for Login
+const jwt = require('jsonwebtoken');
+//include config
+const config = require('config');
 
 //Create router
 const router = new Router();
 
 //Connect User Model
 const User = require('../models/User');
+
 //User registration
 //Create requests /api/auth/register
 router.post(
@@ -18,6 +23,7 @@ router.post(
       check('password',"Password length should be more then 6 symbols").isLength({min: 7})
     ],
     async (req, res) => {
+
     try{
 
         //:TODO Start validation of Email and password
@@ -48,13 +54,50 @@ router.post(
 });
 
 
-
-
-
-
+//User login
 //Create requests /api/auth/login
-router.post('/login', async (req, res) => {
+router.post(
+    '/login',
+    [
+        check('email', "Not Correct Email").isEmail(),
+        check('password',"Password length should be more then 6 symbols").isLength({min: 7})
+    ],
+    async (req, res) => {
+
     try{
+
+        //:TODO Start validation of Email and password
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                errors: errors.array(),
+                message: "Not Valid email or password"
+            })
+        }
+
+        //Payload {email, password}
+        const {email, password} = req.body;
+
+        //Check if user with this email already exists
+        const user = await User.findOne({email});
+        //Check the encrypted password
+        const isMatchPassword = await bcrypt.compare(password, user.password);
+
+        if(!user || !isMatchPassword){
+            return res.status(400).json({message: "Incorrect email or password - user doesn't exists"});
+        }
+
+        //:TODO Create Token JWT
+        const token = jwt.sign(
+            {userId: user.id},
+            config.get('secretKeyJWT'),
+            {expiresIn: '1h'}
+        );
+
+        res.status(200).json({
+            token: token,
+            email: user.email
+        });
 
     }catch (e) {
         res.status(500).json({message: "Smth wrong, try please again..."});
