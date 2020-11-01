@@ -96,10 +96,13 @@ router.post(
             {expiresIn: '1h'}
         );
 
-        res.status(200).json({
-            token: token,
-            email: user.email
-        });
+        res.status(200).json(
+            console.log({
+                token: token,
+                email: user.email
+            })
+        );
+
 
     }catch (e) {
         res.status(500).json({message: "Smth wrong, try please again..."});
