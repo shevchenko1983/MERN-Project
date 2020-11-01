@@ -4,6 +4,8 @@ const express = require('express');
 
 //:TODO init express app
 const app = express();
+//For recognize body
+app.use(express.json({extended: true}));
 //Create Auth EndPoint => '/api/auth'
 app.use('/api/auth', require('./routes/auth.routes'));
 

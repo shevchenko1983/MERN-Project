@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 //Create router
-const router = new Router();
+const router = Router();
 
 //Connect User Model
 const User = require('../models/User');
@@ -34,11 +34,13 @@ router.post(
                 message: "Not Valid email or password"
             })
         }
-
+            
         //Payload {email, password}
         const {email, password} = req.body;
+        console.log(JSON.stringify(req.body));
         //Check if user with this email already exists
         const candidate = await User.findOne({email});
+        console.log("Candidate", candidate);
         if(candidate){
             return res.status(400).json({message: "User with this email already exists"});
         }
